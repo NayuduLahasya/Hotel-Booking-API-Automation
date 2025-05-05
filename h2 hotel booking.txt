@@ -1,0 +1,85 @@
+
+import json
+import unittest
+
+# Replace with your API endpoint
+BASE_URL = "https://your-hotel-booking-api.com/v1"
+
+class HotelBookingAPITest(unittest.TestCase):
+
+    def test_search_hotels(self):
+        # Sample request parameters
+        params = {
+            "city": "London",
+            "checkin": "2025-05-05",
+            "checkout": "2025-05-08",
+            "guests": 2
+        }
+
+        # Send the request
+        response = requests.get(f"{BASE_URL}/hotels", params=params)
+
+        # Assert that the request was successful (status code 200)
+        self.assertEqual(response.status_code, 200, f"Expected status code 200, got {response.status_code}")
+
+        # Optionally, assert that the response contains valid JSON
+        try:
+            data = response.json()
+            self.assertTrue(isinstance(data, list), "Response should be a list")
+        except json.JSONDecodeError:
+            self.fail("Response is not valid JSON")
+
+        # Add assertions based on the expected data structure and content
+        # Example: Check if the list of hotels is not empty
+        self.assertTrue(len(data) > 0, "No hotels found for the given criteria")
+
+    def test_book_hotel(self):
+        # Sample request data
+        data = {
+            "hotel_id": "12345",
+            "guest_name": "John Doe",
+            "checkin": "2025-05-05",
+            "checkout": "2025-05-08",
+            "guests": 2
+        }
+
+        # Send the request
+        response = requests.post(f"{BASE_URL}/bookings", json=data)
+
+        # Assert that the request was successful (status code 201)
+        self.assertEqual(response.status_code, 201, f"Expected status code 201, got {response.status_code}")
+
+        # Optionally, assert that the response contains the booking ID
+        try:
+            data = response.json()
+            self.assertTrue("booking_id" in data, "Booking ID not found in the response")
+        except json.JSONDecodeError:
+            self.fail("Response is not valid JSON")
+
+        # Add assertions based on the expected data structure and content
+        # Example: Verify that the booking ID is a valid integer
+        self.assertTrue(isinstance(data["booking_id"], int), "Booking ID is not an integer")
+
+    def test_get_booking_details(self):
+        # Replace with a valid booking ID
+        booking_id = 123
+
+        # Send the request
+        response = requests.get(f"{BASE_URL}/bookings/{booking_id}")
+
+        # Assert that the request was successful (status code 200)
+        self.assertEqual(response.status_code, 200, f"Expected status code 200, got {response.status_code}")
+
+        # Optionally, assert that the response contains valid JSON
+        try:
+            data = response.json()
+        except json.JSONDecodeError:
+            self.fail("Response is not valid JSON")
+
+        # Add assertions based on the expected data structure and content
+        # Example: Verify that the booking details are as expected
+        self.assertEqual(data["hotel_id"], "12345", "Incorrect hotel ID")
+
+# Run the tests
+if __name__ == '_lasya_':
+    unittest.main()
